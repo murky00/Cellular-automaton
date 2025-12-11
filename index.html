@@ -1,31 +1,422 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cellular Warfare</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Galactic Wars: Corrected Physics</title>
     <style>
-      body { margin: 0; overflow: hidden; background-color: #050505; color: #e5e5e5; }
-      /* Custom scrollbar for panels */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #111; }
-      ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: #555; }
+        /* --- GLOBAL STYLES --- */
+        body {
+            background-color: #050505;
+            color: #ccc;
+            font-family: 'Segoe UI', 'Consolas', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        /* --- HUD --- */
+        .top-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            background: #111;
+            padding: 8px 20px;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .main-stage {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        /* --- ARMORY --- */
+        .armory-panel {
+            width: 230px;
+            background: #0e0e0e;
+            border: 1px solid #333;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 600px;
+        }
+        .panel-red { border-top: 4px solid #ff3333; }
+        .panel-blue { border-top: 4px solid #3388ff; }
+
+        h3 { margin: 0; font-size: 16px; text-align: center; color: #fff; letter-spacing: 2px; }
+        .subtitle { font-size: 10px; text-align: center; color: #666; margin-bottom: 10px; }
+
+        .weapon-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-left: 3px solid #555;
+            color: #aaa;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: left;
+            transition: all 0.1s;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .weapon-btn:hover { background: #252525; color: #fff; border-left-color: #fff; }
+        
+        .panel-red .weapon-btn.active { background: #330505; border-color: #ff3333; border-left-width: 6px; color: #fff; }
+        .panel-blue .weapon-btn.active { background: #051533; border-color: #3388ff; border-left-width: 6px; color: #fff; }
+
+        .wpn-name { font-weight: bold; font-size: 13px; color: #ddd; }
+
+        /* --- SUPERNOVA --- */
+        .weapon-btn.ultimate {
+            margin-top: 15px;
+            background: linear-gradient(90deg, #220505, #111);
+            border: 1px solid #800;
+            border-left: 4px solid #ff0000;
+        }
+        .weapon-btn.ultimate:hover { border-color: #ff4444; box-shadow: 0 0 15px rgba(255,0,0,0.2); }
+        .weapon-btn.ultimate .wpn-name { color: #ff5555; }
+
+        /* --- CANVAS --- */
+        .viewport {
+            position: relative;
+            border: 2px solid #222;
+        }
+        canvas { background-color: #000; display: block; cursor: crosshair; }
+        
+        .time-btn {
+            background: #222; border: 1px solid #444; color: #888;
+            padding: 5px 12px; cursor: pointer; font-size: 11px; font-weight: bold;
+        }
+        .time-btn.active { background: #eee; color: #000; }
+
+        .tip-box { margin-top: 10px; font-size: 12px; color: #555; }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.1/",
-    "react": "https://esm.sh/react@^19.2.1",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.1/"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+<body>
+
+    <div class="top-bar">
+        <button class="time-btn" onclick="Engine.setSpeed(0)">PAUSE</button>
+        <button class="time-btn" onclick="Engine.setSpeed(0.2)">0.2x</button>
+        <button class="time-btn active" onclick="Engine.setSpeed(1)">1.0x</button>
+        <button class="time-btn" onclick="Engine.setSpeed(5)">5.0x</button>
+        <div style="width:20px;"></div>
+        <button class="time-btn" style="color:#ff5555" onclick="Engine.reset()">RESET BATTLEFIELD</button>
+    </div>
+
+    <div class="main-stage">
+        <div class="armory-panel panel-red" id="armory-red">
+            <h3>RED FLEET</h3>
+            <div class="subtitle">HORIZONTAL ASSAULT</div>
+        </div>
+
+        <div class="viewport">
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+            <div style="position:absolute; bottom:5px; left:10px; font-size:11px; color:#555;">
+                GEN: <span id="dispGen" style="color:#ccc">0</span>
+            </div>
+        </div>
+
+        <div class="armory-panel panel-blue" id="armory-blue">
+            <h3>BLUE FLEET</h3>
+            <div class="subtitle">HORIZONTAL ASSAULT</div>
+        </div>
+    </div>
+    
+    <div class="tip-box">
+        TIP: Use "Phalanx" and drag down to create a solid wall.
+    </div>
+
+    <script>
+        /**
+         * ====================================================================
+         * WEAPON DATABASE (Verified B3/S23 Stable Patterns)
+         * ====================================================================
+         */
+         const WEAPON_DATABASE = [
+            // 1. LWSS (Lightweight Spaceship) - Correct Standard Pattern
+            // Moves orthogonally (Right).
+            {
+                id: 'fighter',
+                name: 'Fighter (LWSS)',
+                desc: 'Speed: C/2',
+                coords: [
+                    // This is the canonical LWSS shape
+                    [0,1],[0,3],
+                    [1,0],
+                    [2,0],
+                    [3,0],[3,3],
+                    [4,0],[4,1],[4,2]
+                ]
+            },
+
+            // 2. HWSS (Heavyweight Spaceship) - Correct Standard Pattern
+            // Moves orthogonally (Right).
+            {
+                id: 'cruiser',
+                name: 'Cruiser (HWSS)',
+                desc: 'Heavy Armor',
+                coords: [
+                    // Canonical HWSS shape
+                    [0,1],[0,3],
+                    [1,0],
+                    [2,0],
+                    [3,0],
+                    [4,0],
+                    [5,0],[5,3],
+                    [6,0],[6,1],[6,2]
+                ]
+            },
+
+            // 3. Phalanx - Vertical Stack of LWSS
+            // Must have exactly 4 empty rows between ships to avoid interference sparks
+            {
+                id: 'phalanx',
+                name: 'Phalanx Formation',
+                desc: 'Siege Wall',
+                coords: [
+                    // Ship 1
+                    [0,1],[0,3],[1,0],[2,0],[3,0],[3,3],[4,0],[4,1],[4,2],
+                    // Ship 2 (Y+9 spacing is safe)
+                    [0,10],[0,12],[1,9],[2,9],[3,9],[3,12],[4,9],[4,10],[4,11],
+                    // Ship 3
+                    [0,19],[0,21],[1,18],[2,18],[3,18],[3,21],[4,18],[4,19],[4,20]
+                ]
+            },
+
+            // 4. Supernova (Acorn + R-pentomino)
+            {
+                id: 'supernova',
+                name: 'PROJECT: SUPERNOVA',
+                desc: '⚠ DOOMSDAY ⚠',
+                isUltimate: true, 
+                coords: [
+                    [10, 0], [12, 1], [9, 2], [10, 2], [13, 2], [14, 2], [15, 2],
+                    [0, 10], [2, 11], [-1, 12], [0, 12], [3, 12], [4, 12], [5, 12],
+                    [20, 10], [22, 11], [19, 12], [20, 12], [23, 12], [24, 12], [25, 12],
+                    [12, 6], [13, 6], [11, 7], [12, 7], [12, 8] 
+                ]
+            }
+        ];
+
+        /**
+         * ====================================================================
+         * ENGINE
+         * ====================================================================
+         */
+        const Engine = {
+            config: { width: 200, height: 100, cellSize: 4, baseSize: 45, fps: 60 },
+            state: {
+                grid: [], isRunning: true, generation: 0, speedMult: 1,
+                currentTool: { red: null, blue: null },
+                isMouseDown: false,
+                lastPlacePos: { x: -100, y: -100 }
+            },
+            patternMap: {}, ctx: null, canvas: null,
+
+            init() {
+                WEAPON_DATABASE.forEach(w => this.patternMap[w.id] = w);
+                this.setupUI();
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d', { alpha: false });
+                this.reset();
+
+                this.canvas.addEventListener('mousedown', (e) => {
+                    this.state.isMouseDown = true;
+                    this.handleInput(e);
+                });
+                window.addEventListener('mouseup', () => {
+                    this.state.isMouseDown = false;
+                    this.state.lastPlacePos = { x: -100, y: -100 };
+                });
+                this.canvas.addEventListener('mousemove', (e) => {
+                    if(this.state.isMouseDown) this.handleInput(e);
+                });
+
+                this.lastTime = 0;
+                requestAnimationFrame((t) => this.loop(t));
+            },
+
+            setupUI() {
+                const createBtn = (team, wpn, container) => {
+                    const btn = document.createElement('button');
+                    btn.className = `weapon-btn ${wpn.isUltimate ? 'ultimate' : ''}`;
+                    btn.innerHTML = `<span class="wpn-name">${wpn.name}</span><span class="wpn-desc">${wpn.desc}</span>`;
+                    btn.onclick = () => {
+                        this.state.currentTool.red = null;
+                        this.state.currentTool.blue = null;
+                        this.state.currentTool[team] = wpn.id;
+                        document.querySelectorAll('.weapon-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    };
+                    container.appendChild(btn);
+                };
+                WEAPON_DATABASE.forEach(w => {
+                    createBtn('red', w, document.getElementById('armory-red'));
+                    createBtn('blue', w, document.getElementById('armory-blue'));
+                });
+            },
+
+            reset() {
+                this.state.grid = new Array(this.config.width).fill(null).map(() => new Uint8Array(this.config.height).fill(0));
+                this.state.generation = 0;
+                this.draw();
+            },
+
+            setSpeed(val) {
+                this.state.speedMult = val;
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                event.target.classList.add('active');
+            },
+
+            handleInput(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const cx = Math.floor((e.clientX - rect.left) / this.config.cellSize);
+                const cy = Math.floor((e.clientY - rect.top) / this.config.cellSize);
+
+                // Anti-Collision Drag Logic
+                // If we paint too close to the last paint, the overlapping pixels kill the spaceship
+                const dist = Math.abs(cx - this.state.lastPlacePos.x) + Math.abs(cy - this.state.lastPlacePos.y);
+                if (dist < 10) return; // Keep safe distance
+
+                let activeTeam = null;
+                let activeToolId = null;
+
+                if (cx < this.config.baseSize) {
+                    activeTeam = 1;
+                    activeToolId = this.state.currentTool.red;
+                } else if (cx > this.config.width - this.config.baseSize) {
+                    activeTeam = 2;
+                    activeToolId = this.state.currentTool.blue;
+                }
+
+                if (!activeTeam || !activeToolId) return;
+
+                this.placePattern(cx, cy, activeTeam, activeToolId);
+                this.state.lastPlacePos = { x: cx, y: cy };
+                this.draw();
+            },
+
+            placePattern(cx, cy, teamId, patternId) {
+                const data = this.patternMap[patternId];
+                if (!data) return;
+
+                const offsetX = -3;
+                const offsetY = -2;
+
+                data.coords.forEach(([px, py]) => {
+                    let finalX, finalY;
+                    if (teamId === 1) {
+                        // Red (Moves Right)
+                        finalX = cx + px + offsetX;
+                        finalY = cy + py + offsetY;
+                    } else {
+                        // Blue (Moves Left)
+                        // Mirror horizontally: relative x becomes negative
+                        finalX = cx - px - offsetX;
+                        finalY = cy + py + offsetY;
+                    }
+                    this.safeSet(finalX, finalY, teamId);
+                });
+            },
+
+            safeSet(x, y, val) {
+                const h = this.config.height;
+                const wrapY = (y % h + h) % h; 
+                if (x >= 0 && x < this.config.width) {
+                    this.state.grid[x][wrapY] = val;
+                }
+            },
+
+            loop(timestamp) {
+                requestAnimationFrame((t) => this.loop(t));
+                if (this.state.speedMult === 0) return;
+                const interval = 1000 / (this.config.fps * this.state.speedMult);
+                if (timestamp - this.lastTime < interval) return;
+
+                const steps = this.state.speedMult > 5 ? 3 : 1;
+                for(let i=0; i<steps; i++) this.update();
+                
+                this.draw();
+                document.getElementById('dispGen').innerText = this.state.generation;
+                this.lastTime = timestamp;
+            },
+
+            update() {
+                const w = this.config.width;
+                const h = this.config.height;
+                const bs = this.config.baseSize;
+                const g = this.state.grid;
+                const ng = new Array(w).fill(null).map(() => new Uint8Array(h));
+
+                for (let x = 0; x < w; x++) {
+                    for (let y = 0; y < h; y++) {
+                        // --- RULE CHECK: MOORE NEIGHBORHOOD ---
+                        let r = 0, b = 0;
+                        const ym1 = (y - 1 + h) % h; const yp1 = (y + 1) % h;
+                        const xm1 = x - 1; const xp1 = x + 1;
+
+                        const check = (vx, vy) => { const v = g[vx][vy]; if (v===1) r++; else if(v===2) b++; };
+
+                        if (xm1 >= 0) { check(xm1, ym1); check(xm1, y); check(xm1, yp1); }
+                        check(x, ym1); check(x, yp1);
+                        if (xp1 < w) { check(xp1, ym1); check(xp1, y); check(xp1, yp1); }
+
+                        const total = r + b;
+                        const self = g[x][y];
+                        let next = 0;
+
+                        // --- RULE: CONWAY'S LIFE (B3/S23) ---
+                        // Immigration variation: Majority parent determines color
+                        if (self === 0) {
+                            if (total === 3) next = r > b ? 1 : 2;
+                        } else {
+                            if (total === 2 || total === 3) next = self;
+                        }
+
+                        // --- RULE: BASE INTEGRITY ---
+                        // Prevents enemy cells from "eating" the safe zone logic
+                        if (x < bs) { if (next === 2) next = 1; }
+                        else if (x >= w - bs) { if (next === 1) next = 2; }
+
+                        ng[x][y] = next;
+                    }
+                }
+                this.state.grid = ng;
+                this.state.generation++;
+            },
+
+            draw() {
+                const { width, height, cellSize, baseSize } = this.config;
+                const ctx = this.ctx;
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Base Lines
+                ctx.strokeStyle = '#222';
+                ctx.beginPath();
+                ctx.moveTo(baseSize * cellSize, 0); ctx.lineTo(baseSize * cellSize, this.canvas.height);
+                ctx.moveTo((width - baseSize) * cellSize, 0); ctx.lineTo((width - baseSize) * cellSize, this.canvas.height);
+                ctx.stroke();
+
+                for (let x = 0; x < width; x++) {
+                    for (let y = 0; y < height; y++) {
+                        const val = this.state.grid[x][y];
+                        if (val === 0) continue;
+                        ctx.fillStyle = val === 1 ? '#d32f2f' : '#1976d2';
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize - 0.5, cellSize - 0.5);
+                    }
+                }
+            }
+        };
+
+        Engine.init();
+    </script>
+</body>
 </html>
