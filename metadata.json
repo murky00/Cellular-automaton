@@ -1,0 +1,5 @@
+{
+  "name": "Cellular Warfare",
+  "description": "A competitive strategic simulation based on Conway's Game of Life. Deploy cellular patterns to dominate the grid.",
+  "requestFramePermissions": []
+}
