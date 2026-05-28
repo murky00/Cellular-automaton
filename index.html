@@ -1,376 +1,284 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Galactic Wars v1.007: Scorched Earth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 儿童生日聚会 - 创意体验游戏策划 🎁</title>
     <style>
-        /* --- GLOBAL STYLES --- */
         body {
-            background-color: #050505;
-            color: #ccc;
-            font-family: 'Segoe UI', 'Consolas', monospace;
+            font-family: 'Helvetica Neue', Arial, 'Noto Sans SC', 'PingFang SC', sans-serif;
+            background-color: #fcf9f2;
+            color: #4a3e3d;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+            border: 2px dashed #f3d9ba;
+        }
+        header h1 {
+            color: #d47a55;
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        header p {
+            color: #7d6e6d;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 35px;
+        }
+        @media (max-width: 768px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .game-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+            border: 1px solid #efe8df;
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .game-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.06);
+        }
+        .game-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background-color: #f7f3ed;
+        }
+        .game-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .game-content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .game-tag {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
+        .game-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            color: #2c2523;
+        }
+        .game-title span {
+            font-size: 1.1rem;
+            color: #8c7f7e;
+            font-weight: normal;
+            display: block;
+            margin-top: 4px;
+        }
+        .game-desc {
+            font-size: 0.98rem;
+            line-height: 1.6;
+            color: #635756;
+            margin-bottom: 20px;
+        }
+        .game-play {
+            background-color: #faf7f2;
+            padding: 18px 20px;
+            border-radius: 16px;
+            margin-top: auto;
+        }
+        .game-play-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
             align-items: center;
+            gap: 6px;
+        }
+        .game-play ul {
             margin: 0;
-            padding: 20px;
-            user-select: none;
-            overflow: hidden;
+            padding-left: 20px;
+            color: #524746;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .game-play li {
+            margin-bottom: 6px;
+        }
+        .game-play li:last-child {
+            margin-bottom: 0;
         }
 
-        /* --- HUD --- */
-        .top-bar {
-            display: flex; gap: 15px; margin-bottom: 15px; background: #111;
-            padding: 8px 20px; border-radius: 4px; border: 1px solid #333;
-        }
+        /* 游戏专属色彩卡片样式 */
+        .card-teal .game-tag { background-color: #e6fcf5; color: #0ca678; }
+        .card-teal .game-play { border-left: 4px solid #0ca678; }
+        .card-teal .game-play-title { color: #0ca678; }
 
-        .main-stage { display: flex; gap: 20px; align-items: flex-start; }
+        .card-orange .game-tag { background-color: #fff4e6; color: #fd7e14; }
+        .card-orange .game-play { border-left: 4px solid #fd7e14; }
+        .card-orange .game-play-title { color: #fd7e14; }
 
-        /* --- ARMORY --- */
-        .armory-panel {
-            width: 230px; background: #0e0e0e; border: 1px solid #333;
-            padding: 12px; display: flex; flex-direction: column; gap: 8px; max-height: 600px;
-        }
-        .panel-red { border-top: 4px solid #ff3333; }
-        .panel-blue { border-top: 4px solid #3388ff; }
+        .card-indigo .game-tag { background-color: #edf2ff; color: #4c6ef5; }
+        .card-indigo .game-play { border-left: 4px solid #4c6ef5; }
+        .card-indigo .game-play-title { color: #4c6ef5; }
 
-        h3 { margin: 0; font-size: 16px; text-align: center; color: #fff; letter-spacing: 2px; }
-        .subtitle { font-size: 10px; text-align: center; color: #666; margin-bottom: 10px; }
+        .card-pink .game-tag { background-color: #fff0f6; color: #d6336c; }
+        .card-pink .game-play { border-left: 4px solid #d6336c; }
+        .card-pink .game-play-title { color: #d6336c; }
 
-        .weapon-btn {
-            background: #1a1a1a; border: 1px solid #333; border-left: 3px solid #555;
-            color: #aaa; padding: 10px 12px; cursor: pointer; font-size: 12px;
-            text-align: left; transition: all 0.1s; display: flex; flex-direction: column; gap: 2px;
-        }
-        .weapon-btn:hover { background: #252525; color: #fff; border-left-color: #fff; }
-        .panel-red .weapon-btn.active { background: #330505; border-color: #ff3333; border-left-width: 6px; color: #fff; }
-        .panel-blue .weapon-btn.active { background: #051533; border-color: #3388ff; border-left-width: 6px; color: #fff; }
-
-        .wpn-name { font-weight: bold; font-size: 13px; color: #ddd; }
-        .weapon-btn.ultimate {
-            margin-top: 15px; background: linear-gradient(90deg, #220505, #111);
-            border: 1px solid #800; border-left: 4px solid #ff0000;
-        }
-
-        /* --- VIEWPORT --- */
-        .viewport { position: relative; border: 2px solid #222; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        canvas { background-color: #000; display: block; cursor: crosshair; }
-        
-        .time-btn {
-            background: #222; border: 1px solid #444; color: #888;
-            padding: 5px 12px; cursor: pointer; font-size: 11px; font-weight: bold;
-        }
-        .time-btn.active { background: #eee; color: #000; }
-
-        .tip-box { margin-top: 10px; font-size: 12px; color: #555; }
-        .sys-status {
-            font-size: 10px; color: #ff9800; margin-left: 10px; opacity: 0.8;
-            border: 1px solid #e65100; padding: 2px 6px; border-radius: 4px;
-        }
-        .zone-label {
-            position: absolute; top: 10px; font-size: 10px; font-weight: bold;
-            opacity: 0.3; pointer-events: none; letter-spacing: 1px; text-transform: uppercase;
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.9rem;
+            color: #a89e9d;
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <button class="time-btn" onclick="Engine.setSpeed(0)">PAUSE</button>
-        <button class="time-btn" onclick="Engine.setSpeed(0.2)">0.2x</button>
-        <button class="time-btn active" onclick="Engine.setSpeed(1)">1.0x</button>
-        <button class="time-btn" onclick="Engine.setSpeed(5)">5.0x</button>
-        <span class="sys-status">PROTOCOL: SCORCHED EARTH</span>
-        <div style="width:20px;"></div>
-        <button class="time-btn" style="color:#ff5555" onclick="Engine.reset()">RESET</button>
-    </div>
+<div class="container">
+    <header>
+        <h1>🎂 生日派对创意互动游戏提案</h1>
+        <p>
+            欢迎阅览我们的生日聚会游戏企划！这里精选了四款强调“触觉、精细运动与自由创造”的趣味体验项目。这些游戏不仅充满探索引导，也非常适合在派对中活跃气氛、拍照留念，带给孩子们一段与众不同的惊喜时光！
+        </p>
+    </header>
 
-    <div class="main-stage">
-        <div class="armory-panel panel-red" id="armory-red">
-            <h3>RED FLEET</h3>
-            <div class="subtitle">HORIZONTAL ASSAULT</div>
-        </div>
+    <div class="game-grid">
 
-        <div class="viewport">
-            <canvas id="gameCanvas" width="800" height="400"></canvas>
-            <div class="zone-label" style="left: 10px; color: #ff3333;">Red Production</div>
-            <div class="zone-label" style="right: 10px; color: #3388ff;">Blue Production</div>
-            <div style="position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:11px; color:#555;">
-                GEN: <span id="dispGen" style="color:#ccc">0</span>
+        <!-- 游戏 1: Sand Fishing -->
+        <div class="game-card card-teal">
+            <div class="game-image-wrapper">
+                <img src="https://ootori.co/_next/image?url=%2Fimages%2Fsand-fishing%2Fsand-fishing-01.jpg&w=1200&q=75" alt="Sand Fishing" class="game-image">
+            </div>
+            <div class="game-content">
+                <div class="game-tag">🧩 触觉探索 / 轻松治愈</div>
+                <h2 class="game-title">
+                    沙盒钓鱼
+                    <span>Sand Fishing</span>
+                </h2>
+                <p class="game-desc">
+                    这是一个将平时用眼睛寻找的游戏彻底转化为“依靠触觉”来玩的沙盒寻宝游戏。沙子底下埋藏着许多形状、质感各异的“鱼儿”，只有靠小手的灵敏触摸，才能揭开它们的秘密。
+                </p>
+                <div class="game-play">
+                    <div class="game-play-title">✨ 派对玩法建议：</div>
+                    <ul>
+                        <li><b>寻宝挑战：</b>在小沙箱中埋入各种不同纹路和材质的小鱼玩具。</li>
+                        <li><b>盲眼探索：</b>让孩子们闭上眼睛（或戴上可爱的眼罩），将双手伸进沙子里。</li>
+                        <li><b>限时配对：</b>主持人指定一款目标鱼（如“找寻肚子上有凹凸颗粒的鱼”），看谁能最快通过触摸将它钓起！</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <div class="armory-panel panel-blue" id="armory-blue">
-            <h3>BLUE FLEET</h3>
-            <div class="subtitle">HORIZONTAL ASSAULT</div>
+        <!-- 游戏 2: Finger Sports -->
+        <div class="game-card card-orange">
+            <div class="game-image-wrapper">
+                <img src="https://ootori.co/_next/image?url=%2Fimages%2Ffinger-sports%2Ffinger-sports-01.jpg&w=1200&q=75" alt="Finger Sports" class="game-image">
+            </div>
+            <div class="game-content">
+                <div class="game-tag">🏃‍♂️ 运动竞技 / 现场活跃</div>
+                <h2 class="game-title">
+                    手指运动会
+                    <span>Finger Sports</span>
+                </h2>
+                <p class="game-desc">
+                    堪称世界上“最小”的运动会！在这个微缩的竞技世界里，手指将成为跑道上的短跑选手或足球场上的前锋。趣味十足的精细运动竞技，极具仪式感和视觉效果。
+                </p>
+                <div class="game-play">
+                    <div class="game-play-title">✨ 派对玩法建议：</div>
+                    <ul>
+                        <li><b>派对DIY：</b>孩子们可以先画出并制作属于自己的纸质或塑料“手指小鞋”，套在手指上。</li>
+                        <li><b>多项微型赛事：</b>设置桌面赛道，举行手指障碍跑、桌面手指足球赛、手指相扑大对决等。</li>
+                        <li><b>派对锦标赛：</b>举行两两对战，在欢声笑语中决出派对的手指“运动冠军”。</li>
+                    </ul>
+                </div>
+            </div>
         </div>
+
+        <!-- 游戏 3: Corcelain -->
+        <div class="game-card card-indigo">
+            <div class="game-image-wrapper">
+                <img src="https://ootori.co/_next/image?url=%2Fimages%2Fcorcelain%2Fcorcelain-01-keyshot.jpg&w=1200&q=75" alt="Corcelain" class="game-image">
+            </div>
+            <div class="game-content">
+                <div class="game-tag">🎨 动手创造 / 纪念品DIY</div>
+                <h2 class="game-title">
+                    创意螺孔瓷器积木
+                    <span>Corcelain</span>
+                </h2>
+                <p class="game-desc">
+                    这是一个带有螺丝孔的特殊瓷器杯。它的3D模型数据完全开源，孩子们可以像拧螺丝积木一样，在瓷杯或瓷罐上拼装各种彩色配件，将它打造成独创的作品。
+                </p>
+                <div class="game-play">
+                    <div class="game-play-title">✨ 派对玩法建议：</div>
+                    <ul>
+                        <li><b>安全平替改装：</b>准备带有标准螺孔的杯子或可拧螺丝的多孔容器作为基座。</li>
+                        <li><b>拼装工坊：</b>提供彩色的卡通螺丝、3D打印配件、乐高科技件以及贴纸。</li>
+                        <li><b>带回家的礼物：</b>孩子们化身小小工程师，通过自由组装将其变成“怪兽杯”或“机器人笔筒”，制作完成后作为独一无二的伴手礼带回家。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏 4: Touch Match -->
+        <div class="game-card card-pink">
+            <div class="game-image-wrapper">
+                <img src="https://ootori.co/_next/image?url=%2Fimages%2Ftouch-match%2Ftouch-match-01.jpg&w=1200&q=75" alt="Touch Match" class="game-image">
+            </div>
+            <div class="game-content">
+                <div class="game-tag">🧠 益智脑力 / 温暖感官</div>
+                <h2 class="game-title">
+                    触觉对对碰
+                    <span>Touch Match</span>
+                </h2>
+                <p class="game-desc">
+                    一款闭着眼睛玩、依靠指尖来完成的“记忆连连看”游戏。卡片上贴有各种充满温暖记忆、质感截然不同的触觉材质，孩子们需要完全用指腹来给卡片配对。
+                </p>
+                <div class="game-play">
+                    <div class="game-play-title">✨ 派对玩法建议：</div>
+                    <ul>
+                        <li><b>材质卡片准备：</b>准备由毛绒、砂纸、泡棉、丝绸或凹凸波纹构成的两两相同的质感卡片。</li>
+                        <li><b>闭眼匹配：</b>卡片背面朝上放置，孩子们闭上双眼摸索卡片。</li>
+                        <li><b>感官小比拼：</b>孩子们尝试使用不同的手指（甚至用指甲或温度）进行摸索，找出触感一致的卡片配对，配对最多者获胜。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
     </div>
-    
-    <div class="tip-box">
-        v1.007: Debris is now aggressively salted to prevent regeneration loops.
-    </div>
 
-    <script>
-        /**
-         * ====================================================================
-         * WEAPON DATABASE
-         * ====================================================================
-         */
-         const WEAPON_DATABASE = [
-            {
-                id: 'fighter', name: 'Fighter (LWSS)', desc: 'Speed: C/2',
-                coords: [[0,1],[0,3],[1,0],[2,0],[3,0],[3,3],[4,0],[4,1],[4,2]]
-            },
-            {
-                id: 'cruiser', name: 'Cruiser (HWSS)', desc: 'Heavy Armor',
-                coords: [[0,1],[0,3],[1,0],[2,0],[3,0],[4,0],[5,0],[5,3],[6,0],[6,1],[6,2]]
-            },
-            {
-                id: 'phalanx', name: 'Phalanx Formation', desc: 'Siege Wall',
-                coords: [
-                    [0,1],[0,3],[1,0],[2,0],[3,0],[3,3],[4,0],[4,1],[4,2],
-                    [0,10],[0,12],[1,9],[2,9],[3,9],[3,12],[4,9],[4,10],[4,11],
-                    [0,19],[0,21],[1,18],[2,18],[3,18],[3,21],[4,18],[4,19],[4,20]
-                ]
-            },
-            {
-                id: 'supernova', name: 'PROJECT: SUPERNOVA', desc: '⚠ DOOMSDAY ⚠', isUltimate: true, 
-                coords: [
-                    [10, 0], [12, 1], [9, 2], [10, 2], [13, 2], [14, 2], [15, 2],
-                    [0, 10], [2, 11], [-1, 12], [0, 12], [3, 12], [4, 12], [5, 12],
-                    [20, 10], [22, 11], [19, 12], [20, 12], [23, 12], [24, 12], [25, 12],
-                    [12, 6], [13, 6], [11, 7], [12, 7], [12, 8] 
-                ]
-            }
-        ];
+    <footer>
+        <p>🎨 设计概念来源于 Kosuke Takahashi / ootori.co &copy; 2026 </p>
+    </footer>
+</div>
 
-        /**
-         * ====================================================================
-         * ENGINE v1.007
-         * ====================================================================
-         */
-        const Engine = {
-            config: { width: 200, height: 100, cellSize: 4, baseSize: 45, fps: 60 },
-            state: {
-                grid: [], 
-                heatMap: [], // Tracks activity duration
-                lockMap: [], // NEW: "Salted Earth" - prevents anything from growing here
-                isRunning: true, generation: 0, speedMult: 1,
-                currentTool: { red: null, blue: null },
-                isMouseDown: false, lastPlacePos: { x: -100, y: -100 }
-            },
-            patternMap: {}, ctx: null, canvas: null,
-
-            init() {
-                WEAPON_DATABASE.forEach(w => this.patternMap[w.id] = w);
-                this.setupUI();
-                this.canvas = document.getElementById('gameCanvas');
-                this.ctx = this.canvas.getContext('2d', { alpha: false });
-                this.reset();
-                this.canvas.addEventListener('mousedown', (e) => { this.state.isMouseDown = true; this.handleInput(e); });
-                window.addEventListener('mouseup', () => { this.state.isMouseDown = false; this.state.lastPlacePos = { x: -100, y: -100 }; });
-                this.canvas.addEventListener('mousemove', (e) => { if(this.state.isMouseDown) this.handleInput(e); });
-                this.lastTime = 0; requestAnimationFrame((t) => this.loop(t));
-            },
-
-            setupUI() {
-                const createBtn = (team, wpn, container) => {
-                    const btn = document.createElement('button');
-                    btn.className = `weapon-btn ${wpn.isUltimate ? 'ultimate' : ''}`;
-                    btn.innerHTML = `<span class="wpn-name">${wpn.name}</span><span class="wpn-desc">${wpn.desc}</span>`;
-                    btn.onclick = () => {
-                        this.state.currentTool.red = null; this.state.currentTool.blue = null;
-                        this.state.currentTool[team] = wpn.id;
-                        document.querySelectorAll('.weapon-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                    };
-                    container.appendChild(btn);
-                };
-                WEAPON_DATABASE.forEach(w => {
-                    createBtn('red', w, document.getElementById('armory-red'));
-                    createBtn('blue', w, document.getElementById('armory-blue'));
-                });
-            },
-
-            reset() {
-                const { width, height } = this.config;
-                this.state.grid = new Array(width).fill(null).map(() => new Uint8Array(height).fill(0));
-                this.state.heatMap = new Array(width).fill(null).map(() => new Float32Array(height).fill(0));
-                this.state.lockMap = new Array(width).fill(null).map(() => new Uint8Array(height).fill(0));
-                this.state.generation = 0; this.draw();
-            },
-
-            setSpeed(val) {
-                this.state.speedMult = val;
-                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-                event.target.classList.add('active');
-            },
-
-            handleInput(e) {
-                const rect = this.canvas.getBoundingClientRect();
-                const cx = Math.floor((e.clientX - rect.left) / this.config.cellSize);
-                const cy = Math.floor((e.clientY - rect.top) / this.config.cellSize);
-                const dist = Math.abs(cx - this.state.lastPlacePos.x) + Math.abs(cy - this.state.lastPlacePos.y);
-                if (dist < 10) return; 
-
-                let activeTeam = null; let activeToolId = null;
-                if (cx < this.config.baseSize) { activeTeam = 1; activeToolId = this.state.currentTool.red; } 
-                else if (cx > this.config.width - this.config.baseSize) { activeTeam = 2; activeToolId = this.state.currentTool.blue; }
-                else return;
-
-                if (!activeTeam || !activeToolId) return;
-                this.placePattern(cx, cy, activeTeam, activeToolId);
-                this.state.lastPlacePos = { x: cx, y: cy };
-                this.draw();
-            },
-
-            placePattern(cx, cy, teamId, patternId) {
-                const data = this.patternMap[patternId];
-                if (!data) return;
-                const offsetX = -3, offsetY = -2, margin = 3;
-                
-                // Clear and UNLOCK the area (so we can build)
-                for (let dx = -margin; dx <= 8 + margin; dx++) {
-                    for (let dy = -margin; dy <= 20 + margin; dy++) {
-                        let tx = (teamId === 1) ? cx + dx + offsetX : cx - dx - offsetX;
-                        this.forceClear(tx, cy + dy + offsetY);
-                    }
-                }
-                data.coords.forEach(([px, py]) => {
-                    let tx = (teamId === 1) ? cx + px + offsetX : cx - px - offsetX;
-                    this.safeSet(tx, cy + py + offsetY, teamId);
-                });
-            },
-
-            // Forced set for manual placement, bypasses locks
-            forceClear(x, y) {
-                const h = this.config.height; const wrapY = (y % h + h) % h; 
-                if (x >= 0 && x < this.config.width) {
-                    this.state.grid[x][wrapY] = 0;
-                    this.state.heatMap[x][wrapY] = 0;
-                    this.state.lockMap[x][wrapY] = 0; // Remove salt
-                }
-            },
-
-            safeSet(x, y, val) {
-                const h = this.config.height; const wrapY = (y % h + h) % h; 
-                if (x >= 0 && x < this.config.width) {
-                    this.state.grid[x][wrapY] = val;
-                }
-            },
-
-            loop(timestamp) {
-                requestAnimationFrame((t) => this.loop(t));
-                if (this.state.speedMult === 0) return;
-                const interval = 1000 / (this.config.fps * this.state.speedMult);
-                if (timestamp - this.lastTime < interval) return;
-                const steps = this.state.speedMult > 5 ? 3 : 1;
-                for(let i=0; i<steps; i++) this.update();
-                this.draw();
-                document.getElementById('dispGen').innerText = this.state.generation;
-                this.lastTime = timestamp;
-            },
-
-            update() {
-                const { width: w, height: h, baseSize: bs } = this.config;
-                const g = this.state.grid, heat = this.state.heatMap, lock = this.state.lockMap;
-                
-                const ng = new Array(w).fill(null).map(() => new Uint8Array(h));
-                const nHeat = new Array(w).fill(null).map(() => new Float32Array(h));
-                const nLock = new Array(w).fill(null).map(() => new Uint8Array(h));
-
-                for (let x = 0; x < w; x++) {
-                    const isBase = (x < bs) || (x >= w - bs);
-                    for (let y = 0; y < h; y++) {
-                        
-                        // 1. Handle Locks (Scorched Earth)
-                        // If locked, decrement lock timer and FORCE DEAD. Skip all simulation.
-                        if (lock[x][y] > 0) {
-                            ng[x][y] = 0;
-                            nLock[x][y] = lock[x][y] - 1;
-                            nHeat[x][y] = 0; // Reset heat while locked
-                            continue;
-                        }
-
-                        // Top/Bottom cleanup
-                        if (isBase && (y < 2 || y > h - 3)) { ng[x][y] = 0; continue; }
-
-                        // 2. Simulation (Moore)
-                        let r = 0, b = 0;
-                        const ym1 = (y - 1 + h) % h, yp1 = (y + 1) % h, xm1 = x - 1, xp1 = x + 1;
-                        const check = (vx, vy) => { const v = g[vx][vy]; if (v===1) r++; else if(v===2) b++; };
-                        if (xm1 >= 0) { check(xm1, ym1); check(xm1, y); check(xm1, yp1); }
-                        check(x, ym1); check(x, yp1);
-                        if (xp1 < w) { check(xp1, ym1); check(xp1, y); check(xp1, yp1); }
-
-                        const total = r + b, self = g[x][y];
-                        let next = (self === 0) ? (total === 3 ? (r > b ? 1 : 2) : 0) : ((total === 2 || total === 3) ? self : 0);
-
-                        // 3. Enemy Filter
-                        if (x < bs) { if (next === 2) next = 0; }
-                        else if (x >= w - bs) { if (next === 1) next = 0; }
-
-                        // 4. Heat & Locking (The Fix)
-                        if (isBase) {
-                            let hVal = heat[x][y];
-                            
-                            // 只要活着，或者刚死（余热），热量就增加
-                            if (next > 0) {
-                                hVal += 1.0;
-                            } else {
-                                // 死亡后的冷却极其缓慢，防止振荡器利用“死亡间隙”重置热量
-                                if (hVal > 0) hVal -= 0.05; 
-                            }
-
-                            // 阈值检测
-                            // 飞船：停留极短，热量峰值约 5-6。
-                            // 方块/振荡器：热量无限累积。
-                            if (hVal > 25) { 
-                                next = 0; 
-                                hVal = 0;
-                                nLock[x][y] = 60; // 锁定 60 帧 (1秒)。禁止再生。
-                            }
-                            
-                            nHeat[x][y] = hVal;
-                        }
-
-                        ng[x][y] = next;
-                    }
-                }
-                this.state.grid = ng; this.state.heatMap = nHeat; this.state.lockMap = nLock;
-                this.state.generation++;
-            },
-
-            draw() {
-                const { width: w, height: h, cellSize: cs, baseSize: bs } = this.config;
-                this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                this.ctx.fillStyle = '#1a0505'; this.ctx.fillRect(0, 0, bs * cs, this.canvas.height);
-                this.ctx.fillStyle = '#050a1a'; this.ctx.fillRect((w - bs) * cs, 0, bs * cs, this.canvas.height);
-                
-                this.ctx.strokeStyle = '#333'; this.ctx.beginPath();
-                this.ctx.moveTo(bs * cs, 0); this.ctx.lineTo(bs * cs, this.canvas.height);
-                this.ctx.moveTo((w - bs) * cs, 0); this.ctx.lineTo((w - bs) * cs, this.canvas.height);
-                this.ctx.stroke();
-
-                for (let x = 0; x < w; x++) {
-                    for (let y = 0; y < h; y++) {
-                        // Draw Lock Visualization (Salted Earth) - Faint Static
-                        if (this.state.lockMap[x][y] > 0) {
-                            this.ctx.fillStyle = '#222';
-                            this.ctx.fillRect(x * cs, y * cs, cs, cs);
-                        }
-
-                        const val = this.state.grid[x][y];
-                        if (val === 0) continue;
-                        this.ctx.fillStyle = val === 1 ? '#d32f2f' : '#1976d2';
-                        this.ctx.fillRect(x * cs, y * cs, cs - 0.5, cs - 0.5);
-                    }
-                }
-            }
-        };
-
-        Engine.init();
-    </script>
 </body>
 </html>
