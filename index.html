@@ -3,271 +3,519 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎂 儿童生日聚会 - 创意体验游戏策划 🎁</title>
+    <title>🎂 2天1晚生日度假派对暨创意游戏深度提案 🌲</title>
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Noto Sans SC', 'PingFang SC', sans-serif;
-            background-color: #fcf9f2;
-            color: #4a3e3d;
+        :root {
+            --primary-color: #5d7a68;   /* 森林度假绿 */
+            --accent-color: #d47a55;    /* 温暖落日橘 */
+            --bg-color: #fbf9f6;        /* 舒适米白 */
+            --text-color: #4a3e3d;      /* 柔和深褐 */
+            --card-bg: #ffffff;
+            --border-color: #efe8e2;
+            --tag-bg: #eef3ef;
+            --pastel-yellow: #fff9db;   /* 儿童明黄 */
+            --pastel-blue: #e7f5ff;     /* 晴空浅蓝 */
+        }
+
+        /* 基础重置 */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 20px;
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Noto Sans SC', 'PingFang SC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            -webkit-tap-highlight-color: transparent; /* 优化移动端点击高亮 */
         }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px; /* 适合移动端的较小边距 */
+        }
+
+        /* 顶部横幅 - 手机端自适应缩进 */
         header {
             text-align: center;
-            margin-bottom: 50px;
-            background: #ffffff;
-            padding: 30px;
+            background: linear-gradient(135deg, #eef3ef 0%, #f4eae1 100%);
+            padding: 40px 20px;
             border-radius: 24px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
-            border: 2px dashed #f3d9ba;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.02);
+            border: 2px dashed #ebdcd0;
         }
+
         header h1 {
-            color: #d47a55;
-            font-size: 2.2rem;
-            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.8rem; /* 适合手机的字体大小 */
             margin-bottom: 12px;
+            line-height: 1.3;
         }
+
         header p {
-            color: #7d6e6d;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            max-width: 700px;
+            font-size: 0.95rem;
+            color: #6e5e5d;
+            max-width: 800px;
             margin: 0 auto;
+            line-height: 1.6;
         }
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-            gap: 35px;
+
+        /* 快速导航 - 手机端支持滑动或自动折行 */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
         }
-        @media (max-width: 768px) {
-            .game-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .game-card {
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 10px 18px;
             background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover, .nav-links a:active {
+            background: var(--primary-color);
+            color: #ffffff;
+        }
+
+        /* 模块大标题 */
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            border-left: 5px solid var(--accent-color);
+            padding-left: 12px;
+            margin-top: 45px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: #8c7f7e;
+            margin-bottom: 25px;
+        }
+
+        /* 日期分界条 */
+        .day-divider {
+            font-size: 1.25rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin: 35px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .day-divider::after {
+            content: '';
+            flex-grow: 1;
+            height: 2px;
+            background: linear-gradient(to right, #f3e5d8, transparent);
+        }
+
+        /* 响应式网格：手机端强制单列，大屏自动多列 */
+        .grid-3-col {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* 图文卡片基础样式 - 专为手机优化 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.02);
             overflow: hidden;
-            border: 1px solid #efe8df;
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .game-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.06);
-        }
-        .game-image-wrapper {
+
+        .card-image-wrapper {
             position: relative;
             width: 100%;
-            height: 280px;
+            height: 180px; /* 手机端适中高度，避免长屏滑动过长 */
             background-color: #f7f3ed;
         }
-        .game-image {
+
+        .card-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .game-content {
-            padding: 30px;
+
+        .card-content {
+            padding: 20px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
-        .game-tag {
+
+        /* 行程时间徽章 */
+        .time-badge {
             display: inline-block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
-            padding: 6px 14px;
+            padding: 4px 10px;
             border-radius: 999px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             align-self: flex-start;
+            background-color: var(--tag-bg);
+            color: var(--primary-color);
         }
-        .game-title {
-            font-size: 1.6rem;
+
+        .card-title {
+            font-size: 1.2rem;
             font-weight: bold;
-            margin: 0 0 15px 0;
+            margin-bottom: 10px;
             color: #2c2523;
+            line-height: 1.4;
         }
-        .game-title span {
-            font-size: 1.1rem;
-            color: #8c7f7e;
-            font-weight: normal;
-            display: block;
-            margin-top: 4px;
-        }
-        .game-desc {
-            font-size: 0.98rem;
-            line-height: 1.6;
+
+        .card-desc {
+            font-size: 0.88rem;
+            line-height: 1.5;
             color: #635756;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-        .game-play {
+
+        /* 手机端更加易读的折叠式细节框 */
+        .card-details {
             background-color: #faf7f2;
-            padding: 18px 20px;
-            border-radius: 16px;
+            padding: 15px;
+            border-radius: 14px;
+            border-left: 3px solid var(--primary-color);
+            font-size: 0.82rem;
             margin-top: auto;
         }
-        .game-play-title {
+
+        .card-details-title {
             font-weight: bold;
-            font-size: 1rem;
-            margin-bottom: 10px;
+            color: var(--primary-color);
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
-        .game-play ul {
+
+        .card-details ul {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 14px;
             color: #524746;
-            font-size: 0.95rem;
-            line-height: 1.6;
         }
-        .game-play li {
-            margin-bottom: 6px;
+
+        .card-details li {
+            margin-bottom: 4px;
         }
-        .game-play li:last-child {
-            margin-bottom: 0;
+
+        /* 自由活动高亮处理 */
+        .highlight-card {
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 8px 24px rgba(212, 122, 85, 0.05);
+        }
+        .highlight-card .time-badge {
+            background-color: #fff4e6;
+            color: var(--accent-color);
+        }
+        .highlight-card .card-details {
+            border-left-color: var(--accent-color);
+        }
+        .highlight-card .card-details-title {
+            color: var(--accent-color);
+        }
+
+        /* 住宿卡片特有标签 */
+        .hotel-tag {
+            background-color: #eef2f7;
+            color: #3182ce;
         }
 
         /* 游戏专属色彩卡片样式 */
+        .game-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+        .game-play {
+            background-color: #faf7f2;
+            padding: 12px 15px;
+            border-radius: 14px;
+            margin-top: 12px;
+        }
+        .game-play-title {
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .game-play ul {
+            margin: 0;
+            padding-left: 14px;
+            color: #524746;
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+        .game-play li {
+            margin-bottom: 4px;
+        }
+
         .card-teal .game-tag { background-color: #e6fcf5; color: #0ca678; }
-        .card-teal .game-play { border-left: 4px solid #0ca678; }
+        .card-teal .game-play { border-left: 3px solid #0ca678; }
         .card-teal .game-play-title { color: #0ca678; }
 
         .card-orange .game-tag { background-color: #fff4e6; color: #fd7e14; }
-        .card-orange .game-play { border-left: 4px solid #fd7e14; }
+        .card-orange .game-play { border-left: 3px solid #fd7e14; }
         .card-orange .game-play-title { color: #fd7e14; }
 
         .card-indigo .game-tag { background-color: #edf2ff; color: #4c6ef5; }
-        .card-indigo .game-play { border-left: 4px solid #4c6ef5; }
+        .card-indigo .game-play { border-left: 3px solid #4c6ef5; }
         .card-indigo .game-play-title { color: #4c6ef5; }
 
         .card-pink .game-tag { background-color: #fff0f6; color: #d6336c; }
-        .card-pink .game-play { border-left: 4px solid #d6336c; }
+        .card-pink .game-play { border-left: 3px solid #d6336c; }
         .card-pink .game-play-title { color: #d6336c; }
+
+        /* 温馨提示 */
+        .tips-section {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 40px;
+            border: 1px dashed #d1dfd5;
+        }
+        .tips-section h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .tips-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            font-size: 0.82rem;
+        }
 
         footer {
             text-align: center;
-            margin-top: 60px;
-            font-size: 0.9rem;
+            margin-top: 50px;
+            font-size: 0.75rem;
             color: #a89e9d;
+            padding-bottom: 20px;
+        }
+
+        /* 电脑端大屏显示适配 */
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+            header h1 {
+                font-size: 2.4rem;
+            }
+            header p {
+                font-size: 1.1rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .section-subtitle {
+                font-size: 1rem;
+            }
+            .nav-links a {
+                font-size: 0.95rem;
+            }
+            .grid-3-col {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .grid-2-col {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .card-image-wrapper {
+                height: 220px;
+            }
+            .card-content {
+                padding: 25px;
+            }
+            .card-title {
+                font-size: 1.35rem;
+            }
+            .card-desc {
+                font-size: 0.92rem;
+            }
+            .card-details {
+                font-size: 0.88rem;
+            }
+            .tips-grid {
+                grid-template-columns: repeat(3, 1fr);
+                font-size: 0.88rem;
+            }
         }
     </style>
 </head>
 <body>
-
 <div class="container">
+
     <header>
-        <h1>🎂 生日派对创意互动游戏提案</h1>
-        <p>
-            欢迎阅览我们的生日聚会游戏企划！这里精选了四款强调“触觉、精细运动与自由创造”的趣味体验项目。这些游戏不仅充满探索引导，也非常适合在派对中活跃气氛、拍照留念，带给孩子们一段与众不同的惊喜时光！
-        </p>
+        <h1>🎂 2天1晚生日度假派对提案</h1>
+        <p>一个集“高品质度假环境、沉浸式童趣探索与暖心仪式感”于一体的深度策划。我们为您和宾客全景设计了丰富、紧凑而不失闲暇的完美周末行程。</p>
     </header>
 
-    <div class="game-grid">
+    <div class="nav-links">
+        <a href="#itinerary">📅 2天1晚详尽行程安排</a>
+        <a href="#hotel">🏨 度假住宿环境详解</a>
+        <a href="#games">🎮 下午创意游戏区详解</a>
+    </div>
 
-        <!-- 游戏 1: Sand Fishing -->
-        <div class="game-card card-teal">
-            <div class="game-image-wrapper">
-                <img src="https://ootori.co/_next/image?url=%2Fimages%2Fsand-fishing%2Fsand-fishing-01.jpg&w=1200&q=75" alt="Sand Fishing" class="game-image">
+    <!-- 模块一：行程安排 -->
+    <div id="itinerary" class="section-title">📅 2天1晚详尽行程安排</div>
+    <div class="section-subtitle">精心打磨的时间轴，结合了团队接待、多媒体展示、手工互动及夜间氛围。</div>
+
+    <!-- 第一天 -->
+    <div class="day-divider">☀️ 第一天：欢聚、创意与星光</div>
+    <div class="grid-3-col">
+        
+        <!-- 签到 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://images.pexels.com/photos/7100331/pexels-photo-7100331.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Resort Welcome & Check-in" class="card-image">
             </div>
-            <div class="game-content">
-                <div class="game-tag">🧩 触觉探索 / 轻松治愈</div>
-                <h2 class="game-title">
-                    沙盒钓鱼
-                    <span>Sand Fishing</span>
-                </h2>
-                <p class="game-desc">
-                    这是一个将平时用眼睛寻找的游戏彻底转化为“依靠触觉”来玩的沙盒寻宝游戏。沙子底下埋藏着许多形状、质感各异的“鱼儿”，只有靠小手的灵敏触摸，才能揭开它们的秘密。
-                </p>
-                <div class="game-play">
-                    <div class="game-play-title">✨ 派对玩法建议：</div>
+            <div class="card-content">
+                <div class="time-badge">10:00 - 11:00</div>
+                <h3 class="card-title">📍 营地集合与气球签到</h3>
+                <p class="card-desc">宾客陆续抵达风景秀丽的度假营地。迎接他们的是彩虹气球门、欢快的背景乐和甜美的签到仪式。小朋友们将在此领取个人专属的“探索护照”。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
                     <ul>
-                        <li><b>寻宝挑战：</b>在小沙箱中埋入各种不同纹路和材质的小鱼玩具。</li>
-                        <li><b>盲眼探索：</b>让孩子们闭上眼睛（或戴上可爱的眼罩），将双手伸进沙子里。</li>
-                        <li><b>限时配对：</b>主持人指定一款目标鱼（如“找寻肚子上有凹凸颗粒的鱼”），看谁能最快通过触摸将它钓起！</li>
+                        <li><b>迎新布置：</b>签到桌摆放由鲜花与卡通摆件装饰的迎新板，提供无糖儿童果汁。</li>
+                        <li><b>儿童手环：</b>每位到场的小朋友佩戴写有家长联系电话的安全手环，确保安全。</li>
+                        <li><b>孩子体验：</b>孩子可在签到背景板上盖上自己的手印，作为入场仪式。</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- 游戏 2: Finger Sports -->
-        <div class="game-card card-orange">
-            <div class="game-image-wrapper">
-                <img src="https://ootori.co/_next/image?url=%2Fimages%2Ffinger-sports%2Ffinger-sports-01.jpg&w=1200&q=75" alt="Finger Sports" class="game-image">
+        <!-- PPT播放 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&auto=format&fit=crop&q=60" alt="Opening Ceremony and slideshow" class="card-image">
             </div>
-            <div class="game-content">
-                <div class="game-tag">🏃‍♂️ 运动竞技 / 现场活跃</div>
-                <h2 class="game-title">
-                    手指运动会
-                    <span>Finger Sports</span>
-                </h2>
-                <p class="game-desc">
-                    堪称世界上“最小”的运动会！在这个微缩的竞技世界里，手指将成为跑道上的短跑选手或足球场上的前锋。趣味十足的精细运动竞技，极具仪式感和视觉效果。
-                </p>
-                <div class="game-play">
-                    <div class="game-play-title">✨ 派对玩法建议：</div>
+            <div class="card-content">
+                <div class="time-badge">11:00 - 12:00</div>
+                <h3 class="card-title">📊 主旨放映与破冰仪式</h3>
+                <p class="card-desc">在多媒体放映厅，拉上窗帘，播放精心制作的成长幻灯片。随后由主持人家长宣布下午的“创意游乐挑战”及地图通关规则，彻底调动起孩子们的好奇心。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
                     <ul>
-                        <li><b>派对DIY：</b>孩子们可以先画出并制作属于自己的纸质或塑料“手指小鞋”，套在手指上。</li>
-                        <li><b>多项微型赛事：</b>设置桌面赛道，举行手指障碍跑、桌面手指足球赛、手指相扑大对决等。</li>
-                        <li><b>派对锦标赛：</b>举行两两对战，在欢声笑语中决出派对的手指“运动冠军”。</li>
+                        <li><b>舒适环境：</b>放映厅铺设柔软的地毯和卡通坐垫，孩子们可以席地而坐。</li>
+                        <li><b>破冰小游戏：</b>PPT播放后进行5分钟的“名字接龙”互动，让不认识的孩子迅速熟悉。</li>
+                        <li><b>发布任务：</b>以“感官小特工”的主题将下午的游戏卡包装成特工任务卡进行分发。</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- 游戏 3: Corcelain -->
-        <div class="game-card card-indigo">
-            <div class="game-image-wrapper">
-                <img src="https://ootori.co/_next/image?url=%2Fimages%2Fcorcelain%2Fcorcelain-01-keyshot.jpg&w=1200&q=75" alt="Corcelain" class="game-image">
+        <!-- 午餐 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Lunch Feast" class="card-image">
             </div>
-            <div class="game-content">
-                <div class="game-tag">🎨 动手创造 / 纪念品DIY</div>
-                <h2 class="game-title">
-                    创意螺孔瓷器积木
-                    <span>Corcelain</span>
-                </h2>
-                <p class="game-desc">
-                    这是一个带有螺丝孔的特殊瓷器杯。它的3D模型数据完全开源，孩子们可以像拧螺丝积木一样，在瓷杯或瓷罐上拼装各种彩色配件，将它打造成独创的作品。
-                </p>
-                <div class="game-play">
-                    <div class="game-play-title">✨ 派对玩法建议：</div>
+            <div class="card-content">
+                <div class="time-badge">12:00 - 13:30</div>
+                <h3 class="card-title">🍽️ 亲子美味午餐时间</h3>
+                <p class="card-desc">在景观餐厅享用精致的自助家庭宴会。我们专门开辟了儿童喜爱的健康低敏档口，并准备了可爱的小餐具，保证营养与就餐趣味性。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
                     <ul>
-                        <li><b>安全平替改装：</b>准备带有标准螺孔的杯子或可拧螺丝的多孔容器作为基座。</li>
-                        <li><b>拼装工坊：</b>提供彩色的卡通螺丝、3D打印配件、乐高科技件以及贴纸。</li>
-                        <li><b>带回家的礼物：</b>孩子们化身小小工程师，通过自由组装将其变成“怪兽杯”或“机器人笔筒”，制作完成后作为独一无二的伴手礼带回家。</li>
+                        <li><b>定制菜单：</b>提供无添加迷你肉丸、胡萝卜星星意面、动物形状小馒头等，并标注过敏源。</li>
+                        <li><b>专人照看：</b>安排一名有看护经验的生活老师在儿童餐区协助分餐，避免汤水烫伤。</li>
+                        <li><b>社交时间：</b>大人们可在主桌慢条斯理地用餐、举杯，享受轻松自在的社交。</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- 游戏 4: Touch Match -->
-        <div class="game-card card-pink">
-            <div class="game-image-wrapper">
-                <img src="https://ootori.co/_next/image?url=%2Fimages%2Ftouch-match%2Ftouch-match-01.jpg&w=1200&q=75" alt="Touch Match" class="game-image">
+        <!-- 自由活动 & 创意游戏 -->
+        <div class="card highlight-card">
+            <div class="card-image-wrapper">
+                <img src="https://images.pexels.com/photos/8613319/pexels-photo-8613319.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Creative Game Stations" class="card-image">
             </div>
-            <div class="game-content">
-                <div class="game-tag">🧠 益智脑力 / 温暖感官</div>
-                <h2 class="game-title">
-                    触觉对对碰
-                    <span>Touch Match</span>
-                </h2>
-                <p class="game-desc">
-                    一款闭着眼睛玩、依靠指尖来完成的“记忆连连看”游戏。卡片上贴有各种充满温暖记忆、质感截然不同的触觉材质，孩子们需要完全用指腹来给卡片配对。
-                </p>
-                <div class="game-play">
-                    <div class="game-play-title">✨ 派对玩法建议：</div>
+            <div class="card-content">
+                <div class="time-badge">13:30 - 17:30</div>
+                <h3 class="card-title">🎯 【创意游乐打卡】与自由时间</h3>
+                <p class="card-desc">重头戏来临！大人们可回房午休或自由度假，孩子们将前往草坪常设的“四大创意感官区”进行通关挑战。这里是专为寿星和伙伴们打造的探索天堂。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
                     <ul>
-                        <li><b>材质卡片准备：</b>准备由毛绒、砂纸、泡棉、丝绸或凹凸波纹构成的两两相同的质感卡片。</li>
-                        <li><b>闭眼匹配：</b>卡片背面朝上放置，孩子们闭上双眼摸索卡片。</li>
-                        <li><b>感官小比拼：</b>孩子们尝试使用不同的手指（甚至用指甲或温度）进行摸索，找出触感一致的卡片配对，配对最多者获胜。</li>
+                        <li><b>专人领队：</b>每个游戏摊位配备1名专职老师，引导、看护并负责在护照上盖章。</li>
+                        <li><b>能量补给站：</b>游戏区旁设立帐篷提供儿童小饼干、水果杯与矿泉水，随时补充体力。</li>
+                        <li><b>托管式省心：</b>家长可完全放手，在不远处的露天咖啡座远远看护，享受静谧时光。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 烧烤与切蛋糕 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Barbecue & Birthday Cake" class="card-image">
+            </div>
+            <div class="card-content">
+                <div class="time-badge">18:00 - 20:00</div>
+                <h3 class="card-title">🍖 户外自助烧烤 & 吹蜡烛仪式</h3>
+                <p class="card-desc">当夕阳渐渐染红天际，营地挂灯渐次亮起。大人们举杯畅饮，孩子们吃着美味烤串。晚宴的高潮将伴随着生日歌的响起，大家围拢在一起切蛋糕、许愿。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
+                    <ul>
+                        <li><b>烤物控制：</b>聘请专业烧烤师傅掌勺，提供适合儿童的少盐烤肉、烤红薯与香甜玉米。</li>
+                        <li><b>高光切蛋糕：</b>特设铺满鲜花的蛋糕桌。在温馨的音响环绕中，大家一起合唱生日歌送上祝福。</li>
+                        <li><b>拍照机位：</b>晚宴一角备有带补光灯的拍照背景，有摄影师抓拍温馨亲子瞬间。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 晚会烟花电影 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://images.pexels.com/photos/164168/pexels-photo-164168.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Bonfire Sparklers Cinema" class="card-image">
+            </div>
+            <div class="card-content">
+                <div class="time-badge">20:00 - 22:00</div>
+                <h3 class="card-title">🔥 温暖篝火、仙女棒与星空电影</h3>
+                <p class="card-desc">夜幕低垂，温暖安全的篝火熊熊燃起。大人们围炉夜话，孩子们则可以挥舞亮晶晶的仙女棒，或躺在草地防潮垫的睡袋上，一边吃着爆米花一边观看治愈的星空大电影。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
+                    <ul>
+                        <li><b>篝火护栏：</b>篝火处拉设半径两米的软性安全网，由两名安保人员全程手持灭火器驻守。</li>
+                        <li><b>安全烟花：</b>统一发放冷光、不烫手、无火烟的儿童专用仙女棒火花。</li>
+                        <li><b>户外躺椅：</b>草坪铺满防潮垫、懒人沙发，提供儿童保暖小毯子，防止草地湿气感冒。</li>
                     </ul>
                 </div>
             </div>
@@ -275,10 +523,253 @@
 
     </div>
 
-    <footer>
-        <p>🎨 设计概念来源于 Kosuke Takahashi / ootori.co &copy; 2026 </p>
-    </footer>
+    <!-- 第二天 -->
+    <div class="day-divider">🍀 第二天：晨光、定格与回味</div>
+    <div class="grid-3-col">
+
+        <!-- 早餐 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=800&auto=format&fit=crop&q=60" alt="Morning Waffles Breakfast" class="card-image">
+            </div>
+            <div class="card-content">
+                <div class="time-badge">08:30 - 09:30</div>
+                <h3 class="card-title">🥞 晨间元气松饼早餐</h3>
+                <p class="card-desc">早晨起床后，迎着度假区纯净的空气和清脆的鸟鸣，享用一顿营养满分的晨间早餐。热乎乎的华夫饼、香甜牛奶与新鲜水果，唤醒新一天的活力。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
+                    <ul>
+                        <li><b>轻松不限时：</b>早餐为流动半自助式。不设强制集合点，睡饱起床的家庭在规定时段随时进餐。</li>
+                        <li><b>水果工坊：</b>餐台特设“水果拼盘区”，小朋友们可以用模具自己切出爱心或星星形状的水果。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 合影与礼品 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://i.pinimg.com/originals/26/9f/70/269f70c62ac2a119a2b278a5a3b1c3e5.jpg" alt="Group Photo & Gift Box" class="card-image">
+            </div>
+            <div class="card-content">
+                <div class="time-badge">10:00 - 11:00</div>
+                <h3 class="card-title">📸 创意大合影与伴手礼发还</h3>
+                <p class="card-desc">两天的旅程迎来了温馨的高光收尾。所有家庭在草坪或地标景观前进行创意大合影。同时进行伴手礼发还仪式，其中最特别的就是昨天孩子们亲手制作的“瓷器作品”！</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
+                    <ul>
+                        <li><b>创意合影：</b>准备可爱的拍照手牌（如“超能力特工”、“XX的生日派对”等），由专业摄影师航拍。</li>
+                        <li><b>礼物包装：</b>老师提前将第一天孩子们拼装完成的“创意螺孔瓷器”擦拭干净，装入定制款牛皮纸提盒。</li>
+                        <li><b>勋章颁发：</b>寿星亲自将纪念盒与“感官勇士勋章”发给小伙伴，成就感满满。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 自由返程 -->
+        <div class="card">
+            <div class="card-image-wrapper">
+                <img src="https://images.pexels.com/photos/267133/pexels-photo-267133.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Resort Path to Departure" class="card-image">
+            </div>
+            <div class="card-content">
+                <div class="time-badge">11:00 之后</div>
+                <h3 class="card-title">🎒 自由活动、退房与愉快返程</h3>
+                <p class="card-desc">办理退房手续。退房后，大家可以根据体力和时间，继续在度假村里划船、走森林步道或在书吧看书，随后愉快驱车返家，结束完美的周末之旅。</p>
+                <div class="card-details">
+                    <div class="card-details-title">📋 落地执行细节：</div>
+                    <ul>
+                        <li><b>托管行李：</b>前台提供全天候行李托管服务，并贴心提供打包搬运箱。</li>
+                        <li><b>离店小惊喜：</b>前台为每位离店的儿童准备了一小包度假村特制的小麦曲奇作为“路途能量包”。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- 模块二：旅店住宿与营地环境 -->
+<div id="hotel" class="section-title">🏨 旅店住宿与营地环境详解</div>
+<div class="section-subtitle">精选对亲子极度友好的高品质度假村，提供舒适的环境保障，让大人孩子都能彻底放松。</div>
+
+<div class="grid-2-col">
+    
+    <!-- 房间 -->
+    <div class="card">
+        <div class="card-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop&q=60" alt="Luxury Family Cabin" class="card-image">
+        </div>
+        <div class="card-content">
+            <div class="time-badge hotel-tag">🏡 亲子主题木屋 / 奢野帐篷房型</div>
+            <h3 class="card-title">自然系奢适起居：舒适且童趣的空间</h3>
+            <p class="card-desc">
+                我们安排的是融入山林美景的原木亲子套房（或配备独立卫浴的高端奢野帐篷房）。拉开窗帘即是连绵的绿意，关上门则是配备完善现代设施的温暖避风港，让对户外居住有顾虑的妈妈们也挑不出毛病。
+            </p>
+            <div class="card-details">
+                <div class="card-details-title">🌿 房间特色与定制服务：</div>
+                <ul>
+                    <li><b>全套亲子床品：</b>提供专为儿童定制的高支数纯棉抗菌床单，配有防滑床护栏和防撞角，避免夜间磕碰。</li>
+                    <li><b>萌趣洗漱备品：</b>备有温和无泪配方的儿童沐浴乳、儿童小牙刷、防滑沐浴凳与可爱的恐龙吸水毛巾。</li>
+                    <li><b>晚安牛奶投递：</b>第一天开床服务（Turndown Service）时，客房部会随房送上一杯温热的燕麦牛奶与祝寿星晚安的卡通卡片。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 营地环境 -->
+    <div class="card">
+        <div class="card-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop&q=60" alt="Resort Landscape" class="card-image">
+        </div>
+        <div class="card-content">
+            <div class="time-badge hotel-tag">🌳 度假区公共设施 / 配套</div>
+            <h3 class="card-title">无忧多功能草坪：视野开阔的天然乐园</h3>
+            <p class="card-desc">
+                度假村拥有开阔、经过每日修剪防虫喷洒的天然大草坪，周边设有无边温水泳池、室内乐高游戏区和多条平缓安全的森林轻徒步小路。
+            </p>
+            <div class="card-details">
+                <div class="card-details-title">🌿 公共配套服务细节：</div>
+                <ul>
+                    <li><b>家长专属“静音区”：</b>在大草坪旁的树荫下常设露天躺椅和精品咖啡车，家长们可以聊天、喝咖啡，同时视线能完美覆盖在草坪上玩耍的孩子们。</li>
+                    <li><b>无盲区安全看护：</b>草坪边缘设有醒目的黄色安全隔离网，泳池与溪流区域配有定岗的值班救生员，随时保障孩子安全。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+<!-- 模块三：创意互动游戏区详解 -->
+<div id="games" class="section-title">🎮 第一天下午：【创意互动游乐区】详解</div>
+<div class="section-subtitle">引入来自 ootori 触感工坊的感官交互游戏，摆脱手机和屏幕，让孩子们通过身体与触觉体验神奇的探索。</div>
+
+<div class="grid-2-col">
+
+    <!-- 游戏 1: Sand Fishing -->
+    <div class="game-card card-teal">
+        <div class="game-image-wrapper">
+            <img src="https://ootori.co/_next/image?url=%2Fimages%2Fsand-fishing%2Fsand-fishing-01.jpg&w=1200&q=75" alt="Sand Fishing" class="game-image">
+        </div>
+        <div class="game-content">
+            <div class="game-tag">🧩 触觉探索 / 轻松治愈</div>
+            <h2 class="game-title">
+                沙盒钓鱼
+                <span>Sand Fishing</span>
+            </h2>
+            <p class="game-desc">
+                一个将视觉完全“关闭”的纯触觉体验。在特制沙箱里，细沙之下埋藏着具有各种凹凸、几何纹理的“鱼”。孩子们需要静下心来，只用双手去感受沙中的世界，根据线索搜寻目标。
+            </p>
+            <div class="game-play">
+                <div class="game-play-title">✨ 现场玩法与布置：</div>
+                <ul>
+                    <li><b>沙箱搭建：</b>在草坪阴凉处放置纯白色木质大沙箱，使用高纯度防过敏白沙，埋入数枚不同材质、凹凸花纹（如条纹、星状）的鱼形模型。</li>
+                    <li><b>特工挑战：</b>给孩子戴上眼罩，让他们把双手伸进白沙中。老师发布指令：“请帮我找一条‘长着鳞片、肚子圆圆’的鱼！”</li>
+                    <li><b>通关奖励：</b>完全依赖指尖皮肤的反馈在沙中摸索，顺利钓出正确目标小鱼即可通关盖章，极其治愈。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏 2: Finger Sports -->
+    <div class="game-card card-orange">
+        <div class="game-image-wrapper">
+            <img src="https://ootori.co/_next/image?url=%2Fimages%2Ffinger-sports%2Ffinger-sports-01.jpg&w=1200&q=75" alt="Finger Sports" class="game-image">
+        </div>
+        <div class="game-content">
+            <div class="game-tag">🏃‍♂️ 运动竞技 / 现场活跃</div>
+            <h2 class="game-title">
+                手指运动会
+                <span>Finger Sports</span>
+            </h2>
+            <p class="game-desc">
+                世界上“最小的运动会”！两根手指套上可爱的迷你跑鞋，瞬间化身赛道上的田径明星。这是一个考验手指精细大肌肉群力量、灵活性与眼手协调的桌面微缩锦标赛。
+            </p>
+            <div class="game-play">
+                <div class="game-play-title">✨ 现场玩法与布置：</div>
+                <ul>
+                    <li><b>桌面对抗赛：</b>摆设一张专用的长条竞技桌，铺设仿真微缩跑道、迷你纸质跨栏和足球网。</li>
+                    <li><b>定制小鞋子：</b>现场提供特制的小鞋图纸和彩绘工具，孩子们涂色并用安全剪刀裁剪出自己的鞋子，套在双指上，代入感极强。</li>
+                    <li><b>微型短跑挑战：</b>孩子们进行手指足球点球大战或跨栏速度赛。家长在一旁拍照效果极其滑稽可爱，能迅速活跃现场气氛。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏 3: Corcelain -->
+    <div class="game-card card-indigo">
+        <div class="game-image-wrapper">
+            <img src="https://ootori.co/_next/image?url=%2Fimages%2Fcorcelain%2Fcorcelain-01-keyshot.jpg&w=1200&q=75" alt="Corcelain" class="game-image">
+        </div>
+        <div class="game-content">
+            <div class="game-tag">🎨 动手创造 / 纪念品DIY</div>
+            <h2 class="game-title">
+                创意螺孔瓷器积木
+                <span>Corcelain</span>
+            </h2>
+            <p class="game-desc">
+                打破传统瓷器“只能看、不可动”的局限。瓷质的杯罐身上预留了规格统一的工业螺孔。孩子们可以使用各种色彩斑斓的拼装积木块和安全塑料螺母，在杯子上进行天马行空的创意组装。
+            </p>
+            <div class="game-play">
+                <div class="game-play-title">✨ 现场玩法与布置：</div>
+                <ul>
+                    <li><b>创造工坊：</b>设立拼装长桌，摆满五颜六色的软胶塑料异形螺丝、机翼配件、机器人机械手、乐高兼容科技连接杆等。</li>
+                    <li><b>设计师体验：</b>提供儿童安全拼装螺丝刀，孩子们动手将平平无奇的杯子打造成“长着翅膀的太空飞船杯”或“怪兽笔筒”。</li>
+                    <li><b>永久带回的纪念：</b>完成拼装后由辅导老师妥善装入定制礼盒。它不只是玩具，还可以作为孩子日常真正可以使用的创意杯子带回家。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏 4: Touch Match -->
+    <div class="game-card card-pink">
+        <div class="game-image-wrapper">
+            <img src="https://ootori.co/_next/image?url=%2Fimages%2Ftouch-match%2Ftouch-match-01.jpg&w=1200&q=75" alt="Touch Match" class="game-image">
+        </div>
+        <div class="game-content">
+            <div class="game-tag">🧠 益智脑力 / 温暖感官</div>
+            <h2 class="game-title">
+                触觉对对碰
+                <span>Touch Match</span>
+            </h2>
+            <p class="game-desc">
+                不靠眼睛看，怎么玩连连看？卡片没有任何亮丽的图案，背面朝上。但卡片触摸面贴有丝绸、粗糙毛圈、硬质砂纸或热敏金属等不同触感的材料。孩子们将依靠指尖记忆进行触摸配对。
+            </p>
+            <div class="game-play">
+                <div class="game-play-title">✨ 现场玩法与布置：</div>
+                <ul>
+                    <li><b>道具设置：</b>在舒适的地垫活动区，平铺数对材质不一的触觉卡牌。</li>
+                    <li><b>指尖配对挑战：</b>孩子们戴上眼罩，翻开一张卡片并用心抚摸感受，然后再翻开第二张，通过指肚传递出的粗糙、光滑、温热、绵软来判断是否是一对。</li>
+                    <li><b>深度认知：</b>让习惯了刷屏幕的孩子重新唤醒双手的精细感知，学会用“指甲盖、指关节或手掌边缘”去感受物体的细节。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 温馨提示 -->
+<div class="tips-section">
+    <h3>💡 2天1晚活动温馨提示</h3>
+    <div class="tips-grid">
+        <div>
+            <b>🎒 个人行李准备：</b><br>
+            1. <b>多备一双鞋：</b>建议多带一双轻便运动鞋。下午自由活动有沙地和草坪，以防鞋子进沙或沾湿。<br>
+            2. <b>保暖防风衣物：</b>度假区林间夜晚温差大，篝火电影环节在户外，请家长为孩子备好一件防风外套和保暖长裤。
+        </div>
+        <div>
+            <b>☀️ 防蚊防虫防晒：</b><br>
+            1. <b>物理避蚊：</b>下午草坪区活动，建议家长在行李中准备一些儿童防蚊贴。现场也会备有驱蚊液与防晒喷雾。<br>
+            2. <b>备用药包：</b>随队生活老师会备有家庭常用的小药箱（创可贴、消炎药、防蚊叮咬药膏、退热贴等），家长无需过分担忧。
+        </div>
+        <div>
+            <b>🎁 关于通关伴手礼：</b><br>
+            1. <b>瓷器杯的安全：</b>现场组装杯子所使用的螺丝、配件皆为无异味、无毛刺的食品级安全材质，带回家可作为真正的餐具或创意笔筒日常使用。<br>
+            2. <b>盖章奖励机制：</b>请家长鼓励小孩子保管好自己的“探索护照”，第二天大合影时集满盖章的宝宝将换取一份丰厚的感官徽章大礼。
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>🎨 创意概念来源于 Kosuke Takahashi / ootori.co & Unsplash &copy; 2026 </p>
+</footer>
+</div> <!-- .container 闭合 -->
 </body>
 </html>
